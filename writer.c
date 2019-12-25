@@ -28,7 +28,7 @@ data=shmat(shmd,0,0);
   if (data<0) printf("Error shmatting.");
 
  if (!(*data)){
-   printf("No data to display.");
+   printf("No data to display.\n");
  }
  else printf("Last added: %s\n",data);
 

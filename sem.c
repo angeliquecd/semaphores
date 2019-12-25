@@ -60,7 +60,7 @@ close(fd);
   }
 
 if (strcmp(argsv[1],"-r")==0){
-printf("Printing the entire story: ");
+printf("Printing the entire story: \n");
 fd=open(STORY,O_RDONLY);
   if (fd<0) printf("Error opening file.\n");
 char buff[SEG_SIZE];
@@ -68,11 +68,6 @@ while(read(fd,buff,SEG_SIZE)>=SEG_SIZE){
   printf("%s",buff);
 }
 printf("\n");
-
-if (fd<0) printf("Error opening file.\n");
-r=read(fd,buff,SEG_SIZE);
-  if (r<0) printf("Error reading file.\n");
-printf("%s",buff);
 
 semd=semget(KEY,1,0);
 q=semctl(semd, IPC_RMID, 0);
@@ -86,7 +81,8 @@ if (q<0) printf ("Error removing shared memory.\n");
 
 close(fd);
 printf("File closed.\n");
-if (fd<0) printf("Error closing the file.");
+if (fd<0) printf("Error closing the file.\n");
+
   }
 
 if (strcmp(argsv[1],"-v")==0){
