@@ -21,10 +21,10 @@
 int writeit() {
   int shmd,fd,r;
  char * data;
-   fd=open("story.txt",O_WRONLY |O_APPEND);
+fd=open("story.txt",O_WRONLY |O_APPEND);
    if (fd<0) printf("Error opening file.\n");
-  shmd=shmget(KEY2,1,0);
-  data=shmat(shmd,0,0);
+shmd=shmget(KEY2,1,0);
+data=shmat(shmd,0,0);
   if (data<0) printf("Error shmatting.");
 
  if (!(*data)){
@@ -34,11 +34,12 @@ int writeit() {
 
  printf("Add your own: ");
  fgets(data,SEG_SIZE,stdin);//takes in input
- *strchr(data,'\n')=0;
- r=write(fd,data,SEG_SIZE);//writes to the file
- shmdt(data);//adds new line to shared mem
-if (r<0) printf("Error writing to file.\n");
-  return 0;
+  *strchr(data,'\n')=' ';
+r=write(fd,data,SEG_SIZE);//writes to the file
+  if (r<0) printf("Error writing to file.\n");
+shmdt(data);//adds new line to shared mem
+close(fd);
+return 0;
 }
 
 int main(){
