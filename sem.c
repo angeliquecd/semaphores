@@ -12,7 +12,11 @@
 #include <sys/wait.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include <sys/shm.h>
+#include "writer.c"
 #define KEY 10001
+#define KEY2 1234
+#define SEG_SIZE 200
 // union semun {
 //   int              val;    /* Value for SETVAL */
 //   struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
@@ -22,34 +26,51 @@
 // };
 
 int main(int argc, char *argsv[]){
-  int semd,v,r,q;
+  int semd,v,r,q,shmd;
+  char * data;
+  char input[3];
 if (argsv[1]){
 if (strcmp(argsv[1],"-c")==0){
   printf("Creating the semaphore.\n");
   semd=semget(KEY,1, IPC_CREAT | IPC_EXCL | 0644);
+
+  printf("Creating the shared memory.\n");
+  shmd=shmget(KEY2,SEG_SIZE, IPC_CREAT | 0644);
+  data=shmat(shmd,0,0);
+  if (shmd<0){
+    printf("Error opening shared memory.\n");
+  }
   if (semd<0) {
     printf("There was an error. %d\n",semd);
     semd=semget(KEY,1,0);
     v=semctl(semd,0,GETVAL,0);
-    printf("semctl returned: %d\n",v);
+  //  printf("semctl returned: %d\n",v);
 }
 else{
   union semun us;
   us.val=1;
   r=semctl(semd,0,SETVAL,us);
-  printf("semctl returned: %d\n",r);
+//  printf("Semctl returned: %d\n",r);
 }
   }
 
 if (strcmp(argsv[1],"-r")==0){
+  printf("Printing the entire story: ");
+
   semd=semget(KEY,1,0);
 q=semctl(semd, IPC_RMID, 0);
-printf("Removing the semaphore.\n");
-if (q<0) printf ("error removing");
+printf("Semaphore released.\n");
+if (q<0) printf ("Error removing semaphore\n");
+
+shmd=shmget(KEY2,1,0);
+q=shmctl(shmd,IPC_RMID,0);
+printf("Shared memory released.\n");
+if (q<0) printf ("Error removing shared memory.\n");
   }
 
 if (strcmp(argsv[1],"-v")==0){
-printf("The story so far:\n");
+printf("The story so far: ");
+
   }
 
 }
