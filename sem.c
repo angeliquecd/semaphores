@@ -13,7 +13,7 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/shm.h>
-#include "writer.c"
+//#include "writer.c"
 #define KEY 10001
 #define KEY2 1234
 #define SEG_SIZE 200
@@ -26,9 +26,8 @@
 // };
 
 int main(int argc, char *argsv[]){
-  int semd,v,r,q,shmd;
+  int semd,v,r,q,shmd,fd;
   char * data;
-  char input[3];
 if (argsv[1]){
 if (strcmp(argsv[1],"-c")==0){
   printf("Creating the semaphore.\n");
@@ -37,6 +36,11 @@ if (strcmp(argsv[1],"-c")==0){
   printf("Creating the shared memory.\n");
   shmd=shmget(KEY2,SEG_SIZE, IPC_CREAT | 0644);
   data=shmat(shmd,0,0);
+
+  printf("Creating the file.\n");
+  fd=open("story.txt",O_CREAT | O_TRUNC);
+
+  if (fd<0) printf("Error opening file.\n");
   if (shmd<0){
     printf("Error opening shared memory.\n");
   }
@@ -55,8 +59,9 @@ else{
   }
 
 if (strcmp(argsv[1],"-r")==0){
-  printf("Printing the entire story: ");
-
+/*  printf("Printing the entire story: ");
+  read(fd,data,SEG_SIZE);
+  printf("%s",data); */
   semd=semget(KEY,1,0);
 q=semctl(semd, IPC_RMID, 0);
 printf("Semaphore released.\n");
@@ -66,11 +71,18 @@ shmd=shmget(KEY2,1,0);
 q=shmctl(shmd,IPC_RMID,0);
 printf("Shared memory released.\n");
 if (q<0) printf ("Error removing shared memory.\n");
+
+close(fd);
+printf("File closed.\n");
+if (fd<0) printf("Error closing the file.");
   }
 
 if (strcmp(argsv[1],"-v")==0){
 printf("The story so far: ");
-
+fd=open("story.txt",O_RDONLY);
+r=read(fd,data,SEG_SIZE);
+if (r<1) printf("Error reading from the file.\n");
+printf("%s",data);
   }
 
 }
