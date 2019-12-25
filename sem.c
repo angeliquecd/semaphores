@@ -13,16 +13,16 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #define KEY 10001
-union semun {
-  int              val;    /* Value for SETVAL */
-  struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
-  unsigned short  *array;  /* Array for GETALL, SETALL */
-  struct seminfo  *__buf;  /* Buffer for IPC_INFO
-                              (Linux-specific) */
-};
+// union semun {
+//   int              val;    /* Value for SETVAL */
+//   struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
+//   unsigned short  *array;  /* Array for GETALL, SETALL */
+//   struct seminfo  *__buf;  /* Buffer for IPC_INFO
+//                               (Linux-specific) */
+// };
 
 int main(int argc, char *argsv[]){
-  int semd,v,r;
+  int semd,v,r,q;
 if (argsv[1]){
 if (strcmp(argsv[1],"-c")==0){
   printf("Creating the semaphore.\n");
@@ -42,8 +42,10 @@ else{
   }
 
 if (strcmp(argsv[1],"-r")==0){
+  semd=semget(KEY,1,0);
+q=semctl(semd, IPC_RMID, 0);
 printf("Removing the semaphore.\n");
-semctl(semd, IPC_RMID, 0);
+if (q<0) printf ("error removing");
   }
 
 if (strcmp(argsv[1],"-v")==0){
