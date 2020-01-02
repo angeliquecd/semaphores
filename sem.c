@@ -18,13 +18,13 @@
 #define KEY2 1234
 #define SEG_SIZE 200
 #define STORY "story.txt"
-union semun {
-  int              val;    /* Value for SETVAL */
-  struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
-  unsigned short  *array;  /* Array for GETALL, SETALL */
-  struct seminfo  *__buf;  /* Buffer for IPC_INFO
-                              (Linux-specific) */
-};
+// union semun {
+//   int              val;    /* Value for SETVAL */
+//   struct semid_ds *buf;    /* Buffer for IPC_STAT, IPC_SET */
+//   unsigned short  *array;  /* Array for GETALL, SETALL */
+//   struct seminfo  *__buf;  /* Buffer for IPC_INFO
+//                               (Linux-specific) */
+// };
 
 int main(int argc, char *argsv[]){
   int semd,v,r,q,shmd,fd;
@@ -40,7 +40,7 @@ if (strcmp(argsv[1],"-c")==0){
   data=shmat(shmd,0,0);
 
   printf("Creating the file.\n");
-  fd=open(STORY,O_CREAT | O_TRUNC);
+  fd=open(STORY,O_CREAT | O_TRUNC, 0644);
 
   if (fd<0) printf("Error opening file.\n");
   if (shmd<0) printf("Error opening shared memory.\n");
