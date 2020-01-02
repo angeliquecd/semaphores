@@ -82,7 +82,7 @@ if (q<0) printf ("Error removing shared memory.\n");
 close(fd);
 printf("File closed.\n");
 if (fd<0) printf("Error closing the file.\n");
-
+remove(STORY);
   }
 
 if (strcmp(argsv[1],"-v")==0){
