@@ -42,7 +42,7 @@ if (strcmp(argsv[1],"-c")==0){
   printf("Creating the file.\n");
   fd=open(STORY,O_CREAT | O_TRUNC, 0644);
 
-  if (fd<0) printf("Error opening file.\n");
+  if (fd<0) printf("Error opening file. %d\n",errno);
   if (shmd<0) printf("Error opening shared memory.\n");
   if (semd<0) {
     printf("There was an error. %d\n",semd);
